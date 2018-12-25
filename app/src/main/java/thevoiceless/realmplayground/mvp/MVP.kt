@@ -1,6 +1,7 @@
 package thevoiceless.realmplayground.mvp
 
 import io.reactivex.disposables.CompositeDisposable
+import thevoiceless.realmplayground.persistence.RealmPersistence
 
 interface MvpPresenter<V : MvpView> {
     fun attachView(view: V)
@@ -17,7 +18,9 @@ interface RealmPresenter : MvpPresenter<RealmView> {
 interface RealmView : MvpView
 
 
-class RealmPresenterImpl : RealmPresenter {
+class RealmPresenterImpl(
+    private val realm: RealmPersistence
+) : RealmPresenter {
 
     private var view: RealmView? = null
 
@@ -25,6 +28,8 @@ class RealmPresenterImpl : RealmPresenter {
 
     override fun attachView(view: RealmView) {
         this.view = view
+
+        loadData()
     }
 
     override fun detachView() {
@@ -32,4 +37,7 @@ class RealmPresenterImpl : RealmPresenter {
         disposables.dispose()
     }
 
+    private fun loadData() {
+
+    }
 }

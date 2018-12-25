@@ -2,27 +2,21 @@ package thevoiceless.realmplayground
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import thevoiceless.realmplayground.mvp.RealmPresenter
-import thevoiceless.realmplayground.mvp.RealmPresenterImpl
-import thevoiceless.realmplayground.mvp.RealmView
-import thevoiceless.realmplayground.persistence.RealmPersistence
+import thevoiceless.realmplayground.di.dependencies
+import thevoiceless.realmplayground.mvp.MainPresenter
+import thevoiceless.realmplayground.mvp.MainView
 
-class MainActivity : AppCompatActivity(), RealmView {
+class MainActivity : AppCompatActivity(), MainView {
 
-    private lateinit var presenter: RealmPresenter
+    private val presenter: MainPresenter by lazy { dependencies.mainPresenter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        presenter = RealmPresenterImpl(
-            RealmPersistence(this)
-        )
         presenter.attachView(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
         presenter.detachView()
     }
 }

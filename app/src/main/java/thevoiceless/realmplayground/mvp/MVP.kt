@@ -1,7 +1,8 @@
 package thevoiceless.realmplayground.mvp
 
+import com.squareup.moshi.Moshi
 import io.reactivex.disposables.CompositeDisposable
-import thevoiceless.realmplayground.persistence.RealmPersistence
+import thevoiceless.realmplayground.persistence.Persistence
 import javax.inject.Inject
 
 interface MvpPresenter<V : MvpView> {
@@ -12,22 +13,23 @@ interface MvpPresenter<V : MvpView> {
 interface MvpView
 
 
-interface RealmPresenter : MvpPresenter<RealmView> {
+interface MainPresenter : MvpPresenter<MainView> {
 
 }
 
-interface RealmView : MvpView
+interface MainView : MvpView
 
 
-class RealmPresenterImpl @Inject constructor(
-    private val realm: RealmPersistence
-) : RealmPresenter {
+class MainPresenterImpl @Inject constructor(
+    private val persistence: Persistence,
+    private val moshi: Moshi
+) : MainPresenter {
 
-    private var view: RealmView? = null
+    private var view: MainView? = null
 
     private val disposables = CompositeDisposable()
 
-    override fun attachView(view: RealmView) {
+    override fun attachView(view: MainView) {
         this.view = view
 
         loadData()

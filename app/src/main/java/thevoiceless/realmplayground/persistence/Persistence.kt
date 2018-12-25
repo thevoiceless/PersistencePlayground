@@ -13,9 +13,7 @@ interface Persistence {
 
 @Singleton
 class RealmPersistence @Inject constructor(
-    context: Context,
-    private val realmName: String = REALM_NAME,
-    private val schemaVersion: Long = SCHEMA_VERSION
+    context: Context
 ) : Persistence {
 
     init {
@@ -25,8 +23,8 @@ class RealmPersistence @Inject constructor(
     private val realm: Realm
         get() {
             val config = RealmConfiguration.Builder()
-                .name(realmName)
-                .schemaVersion(schemaVersion)
+                .name(REALM_NAME)
+                .schemaVersion(SCHEMA_VERSION)
                 .build()
             Realm.setDefaultConfiguration(config)
 

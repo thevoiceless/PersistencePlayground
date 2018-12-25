@@ -17,8 +17,11 @@ interface DependenciesHolder {
 }
 
 val Activity.dependencies get() = (application as DependenciesHolder).dependencies
-
-
+/*
+A component specifies what dependencies are available. It requires one or more modules that
+control how dependencies are created. The generated component is what we and Dagger both use
+to obtain dependencies.
+ */
 @Component(modules = [
     ContextDependencies::class,
     Presenters::class,
@@ -26,14 +29,23 @@ val Activity.dependencies get() = (application as DependenciesHolder).dependenci
 ])
 @Singleton
 interface Dependencies {
+    /*
+    I've chosen to return interfaces rather than concrete implementations. If I had specified
+    concrete classes, Dagger would use their @Inject-annotated constructors. Instead, it will
+    use the provider methods from the modules.
+     */
     fun mainPresenter(): MainPresenter
-
     fun persistence(): Persistence
     fun moshi(): Moshi
 }
 
 @Module
 class Utilities {
+    /*
+    This provider method creates the Persistence implementation by returning a concrete instance
+    of the RealmPersistence class. Dagger creates that instance via the @Inject-annotated constructor
+    and then passes it as the argument to this method.
+     */
     @Provides
     fun persistence(impl: RealmPersistence): Persistence = impl
 

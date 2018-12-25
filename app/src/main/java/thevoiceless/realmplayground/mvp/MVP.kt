@@ -2,6 +2,7 @@ package thevoiceless.realmplayground.mvp
 
 import io.reactivex.disposables.CompositeDisposable
 import thevoiceless.realmplayground.persistence.RealmPersistence
+import javax.inject.Inject
 
 interface MvpPresenter<V : MvpView> {
     fun attachView(view: V)
@@ -18,7 +19,7 @@ interface RealmPresenter : MvpPresenter<RealmView> {
 interface RealmView : MvpView
 
 
-class RealmPresenterImpl(
+class RealmPresenterImpl @Inject constructor(
     private val realm: RealmPersistence
 ) : RealmPresenter {
 

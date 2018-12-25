@@ -1,7 +1,12 @@
 package thevoiceless.realmplayground.persistence.data
 
+import com.squareup.moshi.Json
+
 data class BlackjackHand(
+    @Json(name = "hidden_card")
     val hiddenCard: Card,
+
+    @Json(name = "visible_cards")
     val visibleCards: List<Card>
 )
 
@@ -11,9 +16,16 @@ data class Card(
 )
 
 sealed class Suit {
+    @Json(name = "CLUBS")
     object CLUBS : Suit()
+
+    @Json(name = "DIAMONDS")
     object DIAMONDS : Suit()
+
+    @Json(name = "HEARTS")
     object HEARTS : Suit()
+
+    @Json(name = "SPADES")
     object SPADES : Suit()
 }
 

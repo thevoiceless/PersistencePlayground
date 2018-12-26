@@ -1,6 +1,8 @@
 package thevoiceless.realmplayground.mvp
 
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import thevoiceless.realmplayground.model.BlackjackHand
 import thevoiceless.realmplayground.network.Network
 import thevoiceless.realmplayground.persistence.Persistence
 import timber.log.Timber
@@ -18,7 +20,9 @@ interface MainPresenter : MvpPresenter<MainView> {
 
 }
 
-interface MainView : MvpView
+interface MainView : MvpView {
+    fun setData(items: List<BlackjackHand>)
+}
 
 
 class MainPresenterImpl @Inject constructor(
@@ -43,16 +47,17 @@ class MainPresenterImpl @Inject constructor(
 
     private fun loadData() {
         disposables.add(persistence.loadCards()
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Timber.i("Loaded ${it.size} items")
+                view?.setData(it)
             }, { throwable ->
                 Timber.e(throwable)
             }))
 
         disposables.add(network.getCards()
-            .flatMapCompletable { cards ->
-                persistence.saveCards(cards)
-            }
+            .flatMapCompletable { cards -> persistence.saveCards(cards) }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 Timber.i("Saved cards")
             }, { throwable ->

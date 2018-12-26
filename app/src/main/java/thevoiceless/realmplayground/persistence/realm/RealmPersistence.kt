@@ -23,6 +23,7 @@ class RealmPersistence @Inject constructor(
         Realm.init(context)
     }
 
+    // TODO: Figure out how to close this, possibly by passing a subscriber to loadCards() etc and returning the disposable
     private val realm: Realm
         get() {
             val config = RealmConfiguration.Builder()

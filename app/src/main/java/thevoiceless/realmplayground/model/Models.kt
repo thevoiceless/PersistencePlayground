@@ -1,7 +1,9 @@
 package thevoiceless.realmplayground.model
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class BlackjackHand(
     @Json(name = "hidden_card")
     val hiddenCard: Card,
@@ -10,6 +12,7 @@ data class BlackjackHand(
     val visibleCards: List<Card>
 )
 
+@JsonClass(generateAdapter = true)
 data class Card(
     val rank: String,
     val suit: Suit

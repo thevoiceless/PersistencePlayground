@@ -50,7 +50,9 @@ class MainPresenterImpl @Inject constructor(
             }))
 
         disposables.add(network.getCards()
-            .map { cards -> persistence.saveCards(cards) }
+            .flatMapCompletable { cards ->
+                persistence.saveCards(cards)
+            }
             .subscribe({
                 Timber.i("Saved cards")
             }, { throwable ->

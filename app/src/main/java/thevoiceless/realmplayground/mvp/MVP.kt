@@ -1,8 +1,9 @@
 package thevoiceless.realmplayground.mvp
 
-import com.squareup.moshi.Moshi
 import io.reactivex.disposables.CompositeDisposable
+import thevoiceless.realmplayground.network.Network
 import thevoiceless.realmplayground.persistence.Persistence
+import timber.log.Timber
 import javax.inject.Inject
 
 interface MvpPresenter<V : MvpView> {
@@ -22,7 +23,7 @@ interface MainView : MvpView
 
 class MainPresenterImpl @Inject constructor(
     private val persistence: Persistence,
-    private val moshi: Moshi
+    private val network: Network
 ) : MainPresenter {
 
     private var view: MainView? = null
@@ -41,6 +42,19 @@ class MainPresenterImpl @Inject constructor(
     }
 
     private fun loadData() {
+        disposables.add(persistence.loadCards()
+            .subscribe({
+                Timber.i("Loaded ${it.size} items")
+            }, { throwable ->
+                Timber.e(throwable)
+            }))
 
+        disposables.add(network.getCards()
+            .map { cards -> persistence.saveCards(cards) }
+            .subscribe({
+                Timber.i("Saved cards")
+            }, { throwable ->
+                Timber.e(throwable)
+            }))
     }
 }

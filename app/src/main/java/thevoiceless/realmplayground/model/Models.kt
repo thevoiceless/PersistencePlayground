@@ -1,4 +1,4 @@
-package thevoiceless.realmplayground.persistence.data
+package thevoiceless.realmplayground.model
 
 import com.squareup.moshi.Json
 
@@ -11,28 +11,28 @@ data class BlackjackHand(
 )
 
 data class Card(
-    val rank: Char,
+    val rank: String,
     val suit: Suit
 )
 
-sealed class Suit {
+enum class Suit {
     @Json(name = "CLUBS")
-    object CLUBS : Suit()
+    Clubs,
 
     @Json(name = "DIAMONDS")
-    object DIAMONDS : Suit()
+    Diamonds,
 
     @Json(name = "HEARTS")
-    object HEARTS : Suit()
+    Hearts,
 
     @Json(name = "SPADES")
-    object SPADES : Suit()
+    Spades
 }
 
 object TestData {
     const val CARD_JSON =
         """
-        {
+        [{
           "hidden_card": {
             "rank": "6",
             "suit": "SPADES"
@@ -47,6 +47,6 @@ object TestData {
               "suit": "HEARTS"
             }
           ]
-        }
+        }]
         """
 }

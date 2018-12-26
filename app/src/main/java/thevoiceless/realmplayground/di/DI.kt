@@ -6,10 +6,16 @@ import com.squareup.moshi.Moshi
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import thevoiceless.realmplayground.model.BlackjackHand
+import thevoiceless.realmplayground.model.Mapper
 import thevoiceless.realmplayground.mvp.MainPresenter
 import thevoiceless.realmplayground.mvp.MainPresenterImpl
+import thevoiceless.realmplayground.network.Network
+import thevoiceless.realmplayground.network.NetworkImpl
 import thevoiceless.realmplayground.persistence.Persistence
-import thevoiceless.realmplayground.persistence.RealmPersistence
+import thevoiceless.realmplayground.persistence.realm.RealmBlackjackHand
+import thevoiceless.realmplayground.persistence.realm.RealmMapper
+import thevoiceless.realmplayground.persistence.realm.RealmPersistence
 import javax.inject.Singleton
 
 interface DependenciesHolder {
@@ -36,6 +42,8 @@ interface Dependencies {
      */
     fun mainPresenter(): MainPresenter
     fun persistence(): Persistence
+    fun realmMapper(): Mapper<BlackjackHand, RealmBlackjackHand>
+    fun network(): Network
     fun moshi(): Moshi
 }
 
@@ -48,6 +56,12 @@ class Utilities {
      */
     @Provides
     fun persistence(impl: RealmPersistence): Persistence = impl
+
+    @Provides
+    fun network(impl: NetworkImpl): Network = impl
+
+    @Provides
+    fun realmMapper(impl: RealmMapper): Mapper<BlackjackHand, RealmBlackjackHand> = impl
 
     @Provides
     @Singleton

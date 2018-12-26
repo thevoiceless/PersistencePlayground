@@ -1,18 +1,21 @@
 package thevoiceless.realmplayground
 
+import android.app.Activity
 import android.app.Application
-import thevoiceless.realmplayground.di.ContextDependencies
-import thevoiceless.realmplayground.di.DaggerDependencies
-import thevoiceless.realmplayground.di.Dependencies
-import thevoiceless.realmplayground.di.DependenciesHolder
+import thevoiceless.realmplayground.di.*
 import timber.log.Timber
 
 class RealmPlaygroundApplication : Application(), DependenciesHolder {
 
-    override val dependencies: Dependencies by lazy {
-        DaggerDependencies.builder()
-            .contextDependencies(ContextDependencies(this))
-            .build()
+    private var dependencies: Dependencies? = null
+
+    override fun getDependencies(activity: Activity?): Dependencies {
+        return dependencies
+            ?: DaggerDependencies.builder()
+                .appDependencies(AppDependencies(this))
+                .also { if (activity != null) it.activityDependencies(ActivityDependencies(activity)) }
+                .build()
+                .also { dependencies = it }
     }
 
     override fun onCreate() {

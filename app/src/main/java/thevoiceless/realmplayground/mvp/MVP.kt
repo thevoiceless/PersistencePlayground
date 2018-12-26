@@ -5,6 +5,7 @@ import io.reactivex.disposables.CompositeDisposable
 import thevoiceless.realmplayground.model.BlackjackHand
 import thevoiceless.realmplayground.network.Network
 import thevoiceless.realmplayground.persistence.Persistence
+import thevoiceless.realmplayground.util.ResourceProvider
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -27,7 +28,8 @@ interface MainView : MvpView {
 
 class MainPresenterImpl @Inject constructor(
     private val persistence: Persistence,
-    private val network: Network
+    private val network: Network,
+    private val resources: ResourceProvider
 ) : MainPresenter {
 
     private var view: MainView? = null

@@ -16,6 +16,9 @@ import thevoiceless.realmplayground.persistence.Persistence
 import thevoiceless.realmplayground.persistence.realm.RealmBlackjackHand
 import thevoiceless.realmplayground.persistence.realm.RealmMapper
 import thevoiceless.realmplayground.persistence.realm.RealmPersistence
+import thevoiceless.realmplayground.util.ActivityResourceProvider
+import thevoiceless.realmplayground.util.ResourceProvider
+import javax.inject.Named
 import javax.inject.Singleton
 
 interface DependenciesHolder {
@@ -73,12 +76,19 @@ class AppDependencies(context: Context) {
     private val appContext: Context = context.applicationContext
 
     @Provides
+    @Named("App")
     fun appContext(): Context = appContext
 }
 
 @Module
 class ActivityDependencies(activity: Activity) {
-    // TODO: Things like ResourceProvider that should use an Activity context instead of the app context
+    private val activityContext: Activity = activity
+
+    @Provides
+    fun activity(): Activity = activityContext
+
+    @Provides
+    fun activityResources(impl: ActivityResourceProvider): ResourceProvider = impl
 }
 
 @Module

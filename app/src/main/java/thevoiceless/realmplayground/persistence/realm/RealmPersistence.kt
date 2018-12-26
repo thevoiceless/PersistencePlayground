@@ -11,11 +11,12 @@ import thevoiceless.realmplayground.model.BlackjackHand
 import thevoiceless.realmplayground.model.Mapper
 import thevoiceless.realmplayground.persistence.Persistence
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class RealmPersistence @Inject constructor(
-    context: Context,
+    @Named("App") context: Context,
     private val mapper: Mapper<BlackjackHand, RealmBlackjackHand>
 ) : Persistence {
 

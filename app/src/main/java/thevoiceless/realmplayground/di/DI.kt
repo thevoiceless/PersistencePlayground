@@ -18,6 +18,7 @@ import thevoiceless.realmplayground.persistence.realm.RealmMapper
 import thevoiceless.realmplayground.persistence.realm.RealmPersistence
 import thevoiceless.realmplayground.util.ActivityResourceProvider
 import thevoiceless.realmplayground.util.ResourceProvider
+import thevoiceless.realmplayground.util.Something
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -28,9 +29,8 @@ interface DependenciesHolder {
 val Activity.dependencies get() = (application as DependenciesHolder).getDependencies(this)
 
 /*
-A component specifies what dependencies are available. It requires one or more modules that
-control how dependencies are created. The generated component is what we and Dagger both use
-to obtain dependencies.
+A component specifies what dependencies are available. It requires one or more modules that control how dependencies are
+created. The generated code is what we and Dagger both use to obtain dependencies.
  */
 @Component(modules = [
     AppDependencies::class,
@@ -50,12 +50,12 @@ interface Dependencies {
 @Module
 class Utilities {
     /*
-    We should generally favor @Inject-annotated constructors. For code that we don't control, we can use methods annotated
-    with @Provides to create the instances ourselves (ex: Moshi).
-    These methods also let us return concrete implementations of interfaces. For example, the persistence() method
-    returns a Persistence implementation; Dagger will use this method any time we need to inject a Persistence instance.
-    Dagger only knows the return type, but we've implemented the method to take a RealmPersistence argument and return
-    it. The RealmPersistence object is constructed using its @Inject-annotated constructor.
+    We should generally favor @Inject-annotated constructors. For code that we don't control, or to return concrete
+    implementations for interfaces, we can use methods annotated with @Provides to create the instances ourselves (ex: Moshi).
+
+    For example, the persistence() method returns a Persistence implementation; Dagger will use this method any time we
+    need to inject a Persistence instance. Dagger only knows the return type, but we've implemented the method to take a
+    RealmPersistence argument and return it. The RealmPersistence object is constructed using its @Inject-annotated constructor.
      */
     @Provides
     fun persistence(impl: RealmPersistence): Persistence = impl
@@ -66,9 +66,21 @@ class Utilities {
     @Provides
     fun realmMapper(impl: RealmMapper): Mapper<BlackjackHand, RealmBlackjackHand> = impl
 
+    /*
+    The @Singleton annotation tells Dagger to create an instance as (you guessed it) a singleton. The annotation can be
+    used on the provider method, but I've read that the best practice is to put it on the @Inject-annotated constructor
+    if possible (ex: RealmPersistence).
+     */
     @Provides
     @Singleton
     fun moshi(): Moshi = Moshi.Builder().build()
+
+    /*
+    If we don't need to specify how a dependency is provided, we don't even need a provider method as long as it has an
+    @Inject-annotated constructor
+     */
+//    @Provides
+//    fun something(): Something = Something()
 }
 
 @Module

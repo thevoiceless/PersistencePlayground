@@ -123,6 +123,9 @@ abstract class Utilities2 {
 
 @Module
 class AppDependencies(context: Context) {
+    /*
+    Modules that return values from instance fields cannot be abstract/use @Binds
+     */
     private val appContext: Context = context.applicationContext
 
     @Provides
@@ -142,7 +145,7 @@ class ActivityDependencies(activity: Activity) {
 }
 
 @Module
-class Presenters {
-    @Provides
-    fun mainPresenter(impl: MainPresenterImpl): MainPresenter = impl
+abstract class Presenters {
+    @Binds
+    abstract fun mainPresenter(impl: MainPresenterImpl): MainPresenter
 }

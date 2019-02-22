@@ -17,9 +17,7 @@ import thevoiceless.realmplayground.persistence.Persistence
 import thevoiceless.realmplayground.persistence.realm.RealmBlackjackHand
 import thevoiceless.realmplayground.persistence.realm.RealmMapper
 import thevoiceless.realmplayground.persistence.realm.RealmPersistence
-import thevoiceless.realmplayground.util.ActivityResourceProvider
-import thevoiceless.realmplayground.util.ResourceProvider
-import thevoiceless.realmplayground.util.Something
+import thevoiceless.realmplayground.util.*
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -105,6 +103,8 @@ abstract class Utilities2 {
     @Binds
     abstract fun realmMapper(impl: RealmMapper): Mapper<BlackjackHand, RealmBlackjackHand>
 
+    @Binds
+    abstract fun schedulerProvider(impl: AndroidSchedulerProvider): SchedulerProvider
     /*
     If we require any provider methods, they must be made static in order to live in the abstract module class.
 
@@ -112,6 +112,7 @@ abstract class Utilities2 {
     If you want to keep everything in the module class, you'll have to use a companion object annotated with @Module.
     See https://github.com/google/dagger/issues/900#issuecomment-337043187
      */
+    // TODO: https://github.com/google/dagger/issues/900#issuecomment-410041915
     @Module
     companion object {
         @Provides

@@ -6,6 +6,7 @@ import thevoiceless.realmplayground.model.BlackjackHand
 import thevoiceless.realmplayground.network.Network
 import thevoiceless.realmplayground.persistence.Persistence
 import thevoiceless.realmplayground.util.ResourceProvider
+import thevoiceless.realmplayground.util.SchedulerProvider
 import thevoiceless.realmplayground.util.Something
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,6 +29,7 @@ interface MainView : MvpView {
 
 
 class MainPresenterImpl @Inject constructor(
+    private val schedulerProvider: SchedulerProvider,
     private val persistence: Persistence,
     private val network: Network,
     private val resources: ResourceProvider,
@@ -36,6 +38,7 @@ class MainPresenterImpl @Inject constructor(
 
     private var view: MainView? = null
 
+    // TODO: Inject?
     private val disposables = CompositeDisposable()
 
     override fun attachView(view: MainView) {
@@ -51,7 +54,7 @@ class MainPresenterImpl @Inject constructor(
 
     private fun loadData() {
         disposables.add(persistence.loadCards()
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulerProvider.ui())
             .subscribe({
                 Timber.i("Loaded ${it.size} items")
                 view?.setData(it)
@@ -61,7 +64,7 @@ class MainPresenterImpl @Inject constructor(
 
         disposables.add(network.getCards()
             .flatMapCompletable { cards -> persistence.saveCards(cards) }
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulerProvider.ui())
             .subscribe({
                 Timber.i("Saved cards")
             }, { throwable ->

@@ -1,4 +1,4 @@
-package thevoiceless.realmplayground
+package thevoiceless.realmplayground.di
 
 import com.nhaarman.mockitokotlin2.*
 import io.reactivex.Completable
@@ -11,34 +11,35 @@ import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.junit.MockitoJUnitRunner
 import thevoiceless.realmplayground.model.BlackjackHand
-import thevoiceless.realmplayground.mvp.MainPresenterImpl
+import thevoiceless.realmplayground.mvp.MainPresenter
 import thevoiceless.realmplayground.mvp.MainView
 import thevoiceless.realmplayground.network.Network
 import thevoiceless.realmplayground.persistence.Persistence
-import thevoiceless.realmplayground.util.ResourceProvider
-import thevoiceless.realmplayground.util.Something
 import thevoiceless.realmplayground.util.TrampolineSchedulerProvider
 
 @RunWith(MockitoJUnitRunner::class)
-class MainPresenterTest {
+class DaggerMainPresenterTest {
 
-    private lateinit var presenter: MainPresenterImpl
+    private val scheduler = SchedulerForTest(TrampolineSchedulerProvider())
+    private val mockPersistence = mock<Persistence>(defaultAnswer = Answers.RETURNS_DEEP_STUBS) { }
+    private val mockNetwork = mock<Network>(defaultAnswer = Answers.RETURNS_DEEP_STUBS) { }
+
+    private val providers = object : ProvidersForTest() {
+        override fun mockPersistence() = mockPersistence
+        override fun mockNetwork() = mockNetwork
+    }
+
+    private val dependencies = DaggerTestDependencies.builder()
+        .schedulerForTest(scheduler)
+        .providersForTest(providers)
+        .build()
+
+    private lateinit var presenter: MainPresenter
     private val mockView: MainView = mock { }
-
-    private val mockPersistence: Persistence = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS) { }
-    private val mockNetwork: Network = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS) { }
-    private val mockResources: ResourceProvider = mock { }
-    private val mockSomething: Something = mock { }
 
     @Before
     fun setUp() {
-        presenter = MainPresenterImpl(
-            TrampolineSchedulerProvider(),
-            mockPersistence,
-            mockNetwork,
-            mockResources,
-            mockSomething
-        )
+        presenter = dependencies.mainPresenter()
     }
 
     @After

@@ -3,6 +3,7 @@ package thevoiceless.realmplayground.di
 import android.app.Activity
 import android.content.Context
 import com.squareup.moshi.Moshi
+import dagger.Binds
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -36,7 +37,8 @@ created. The generated code is what we and Dagger both use to obtain dependencie
     AppDependencies::class,
     ActivityDependencies::class,
     Presenters::class,
-    Utilities::class
+//    Utilities::class
+    Utilities2::class
 ])
 @Singleton
 interface Dependencies {
@@ -81,6 +83,42 @@ class Utilities {
      */
 //    @Provides
 //    fun something(): Something = Something()
+}
+
+@Module
+abstract class Utilities2 {
+    /*
+    If a provider method simply returns the injected parameter, you can increase performance by using a @Binds method
+    instead. A binds method can only have a single parameter whose type is assignable to the return type, it must be
+    abstract, and therefore the module class must be abstract as well.
+
+    This is more efficient because provider methods are instance methods and therefore need an instance of the module in
+    order to be invoked. If everything is abstract, Dagger will not instantiate the module; instead it will create the
+    injected dependencies and use them directly.
+     */
+    @Binds
+    abstract fun persistence(impl: RealmPersistence): Persistence
+
+    @Binds
+    abstract fun network(impl: NetworkImpl): Network
+
+    @Binds
+    abstract fun realmMapper(impl: RealmMapper): Mapper<BlackjackHand, RealmBlackjackHand>
+
+    /*
+    If we require any provider methods, they must be made static in order to live in the abstract module class.
+
+    The cleanest way to do this in Kotlin is with @JvmStatic methods in a top-level object annotated with @Module.
+    If you want to keep everything in the module class, you'll have to use a companion object annotated with @Module.
+    See https://github.com/google/dagger/issues/900#issuecomment-337043187
+     */
+    @Module
+    companion object {
+        @Provides
+        @Singleton
+        @JvmStatic
+        fun moshi(): Moshi = Moshi.Builder().build()
+    }
 }
 
 @Module
